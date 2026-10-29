@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ショートカット練習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#2a35d8; --bg2:#222bb8; --ink:#f3f4ff; --muted:rgba(243,244,255,.74); --faint:rgba(243,244,255,.22);
+  --case:#161d86; --key:#eef0ff; --keyink:#141a7a; --keyside:#8d97ea;
+  --sun:#ffd23f; --sunink:#0f1560; --mint:#7ff0c3; --rose:#ff5d8f;
+  --display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  --text:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Noto Sans CJK JP",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1456; --bg2:#0b0f40; --case:#070a35; --key:#dfe2ff; --keyside:#6f78c9;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1456; --bg2:#0b0f40; --case:#070a35; --key:#dfe2ff; --keyside:#6f78c9;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-weight:500;line-height:1.65;min-height:100vh}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:20px;padding:20px 28px 0;max-width:1180px;width:100%;margin:0 auto}
+.brand{font-family:var(--display);font-size:15px;white-space:nowrap}
+.bar{flex:1;display:flex;gap:4px}
+.bar i{flex:1;height:5px;border-radius:3px;background:var(--faint)}
+.bar i.done{background:var(--mint)}.bar i.miss{background:var(--rose)}.bar i.cur{background:var(--ink)}
+.count{font-family:var(--display);font-size:15px;min-width:54px;text-align:right}
+.stage{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:3vh 28px 2vh;display:flex;flex-direction:column;justify-content:center;gap:0}
+.pill{align-self:flex-start;font-size:13px;font-weight:900;border:2px solid var(--ink);border-radius:999px;padding:1px 14px;margin-bottom:18px}
+.prompt{font-family:var(--display);font-weight:400;font-size:clamp(34px,7.2vw,92px);line-height:1.12;margin:0;letter-spacing:-.01em}
+.hero{font-family:var(--display);font-weight:400;font-size:clamp(34px,min(6.4vw,10vh),88px);line-height:1.1;margin:0 0 18px}
+.lede{max-width:34em;font-size:16px;color:var(--muted);margin:0 0 20px}
+.msg{min-height:64px;margin-top:22px;font-size:17px;color:var(--muted)}
+.msg b{color:var(--ink)}
+.time{font-family:var(--display);font-size:clamp(34px,5vw,56px);color:var(--mint);line-height:1}
+.time small{font-size:.45em;margin-left:4px}
+.btn{font:inherit;font-weight:900;font-size:17px;cursor:pointer;border:0;border-radius:999px;padding:13px 30px;background:var(--sun);color:var(--sunink)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--faint);padding:8px 18px;font-size:14px}
+.btn:focus-visible,.choice:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.facts{display:flex;gap:36px;margin:0 0 22px}
+.facts div b{display:block;font-family:var(--display);font-weight:400;font-size:34px;line-height:1.2}
+.facts div span{font-size:13px;color:var(--muted)}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:30px;max-width:820px}
+.choice{display:flex;align-items:center;gap:14px;text-align:left;font:inherit;font-weight:700;font-size:20px;cursor:pointer;
+  background:transparent;color:var(--ink);border:2px solid var(--faint);border-radius:16px;padding:16px 18px}
+.choice .no{font-family:var(--display);font-size:15px;color:var(--muted);width:16px}
+.choice.ok{background:var(--mint);border-color:var(--mint);color:var(--sunink)}
+.choice.bad{background:var(--rose);border-color:var(--rose);color:#fff}
+.choice:disabled{cursor:default}
+.score{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.score b{font-family:var(--display);font-weight:400;font-size:clamp(70px,13vw,150px);line-height:1}
+.score span{font-family:var(--display);font-size:clamp(22px,3vw,34px);color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px 48px;margin:10px 0 26px}
+.cols h3{font-size:14px;margin:0 0 4px;color:var(--muted);font-weight:700}
+.list{margin:0;padding:0;list-style:none}
+.list li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-top:1px solid var(--faint);font-size:15px}
+.list li span:last-child{color:var(--muted);white-space:nowrap}
+.note{font-size:13px;color:var(--muted);margin:18px 0 0}
+.fade{animation:fade .18s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* keyboard */
+.kbwrap{display:flex;justify-content:center;padding:0 28px 30px}
+.kb{--u:clamp(28px,min(calc((100vw - 64px)/19.2),calc((100vh - 470px)/6.6)),56px);width:calc(var(--u)*18.5 + var(--u)*.5);
+  background:var(--case);border-radius:calc(var(--u)*.42);padding:calc(var(--u)*.25);
+  box-shadow:0 34px 60px -26px rgba(5,8,60,.7),inset 0 1px 0 rgba(255,255,255,.14)}
+.row{display:grid;grid-template-columns:repeat(74,1fr);height:var(--u)}
+.key{padding:calc(var(--u)*.05)}
+.face{display:flex;align-items:center;justify-content:center;height:100%;border-radius:calc(var(--u)*.17);
+  background:var(--key);color:var(--keyink);font-weight:900;font-size:calc(var(--u)*.38);line-height:1;
+  box-shadow:0 calc(var(--u)*.075) 0 var(--keyside);transition:transform .06s,box-shadow .06s,background .1s}
+.face.w{font-size:calc(var(--u)*.25)}
+.key.held .face{transform:translateY(calc(var(--u)*.065));box-shadow:0 calc(var(--u)*.01) 0 var(--keyside);background:var(--sun);color:var(--sunink)}
+.key.hint .face{background:var(--sun);color:var(--sunink);animation:pulse 1s ease-in-out infinite alternate}
+.key.ok .face{background:var(--mint);color:var(--sunink)}
+.key.bad .face{background:var(--rose);color:#fff}
+@keyframes pulse{from{box-shadow:0 calc(var(--u)*.075) 0 var(--keyside),0 0 0 0 rgba(255,210,63,.7)}to{box-shadow:0 calc(var(--u)*.075) 0 var(--keyside),0 0 0 calc(var(--u)*.1) rgba(255,210,63,0)}}
+@media (max-width:760px){
+  .kbwrap{display:none}
+  .top{padding:16px 18px 0}
+  .stage{padding:6vh 18px 4vh}
+  .choices{grid-template-columns:1fr}
+  .facts{gap:24px}
+}
+@media (prefers-reduced-motion: reduce){
+  .face,.fade,.key.hint .face{transition:none;animation:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><span class="brand">ショートカット練習</span><div class="bar" id="ticks" aria-hidden="true"></div><span class="count" id="count"></span></div>
+  <main class="stage" id="stage"></main>
+  <div class="kbwrap" aria-hidden="true"><div class="kb" id="kb"></div></div>
+</div>
+<script>
+(function(){
+"use strict";
+
+/* ---- お題データ ---- */
+var CARDS=[
+  {id:"copy",t:"press",q:"選択したものをコピー",c:["Ctrl+C"]},
+  {id:"cut",t:"press",q:"選択したものを切り取り",c:["Ctrl+X"]},
+  {id:"paste",t:"press",q:"貼り付け",c:["Ctrl+V"]},
+  {id:"undo",t:"press",q:"元に戻す",c:["Ctrl+Z"]},
+  {id:"redo",t:"press",q:"やり直す",c:["Ctrl+Y","Ctrl+Shift+Z"]},
+  {id:"all",t:"press",q:"すべて選択",c:["Ctrl+A"]},
+  {id:"save",t:"press",q:"上書き保存",c:["Ctrl+S"]},
+  {id:"find",t:"press",q:"ページ内を検索",c:["Ctrl+F"]},
+  {id:"bold",t:"press",q:"太字にする",c:["Ctrl+B"]},
+  {id:"bm",t:"press",q:"お気に入りに追加",c:["Ctrl+D"]},
+  {id:"reload",t:"press",q:"ページを再読み込み",c:["F5","Ctrl+R"]},
+  {id:"wordL",t:"press",q:"カーソルを1語左へ",c:["Ctrl+ArrowLeft"]},
+  {id:"wordR",t:"press",q:"カーソルを1語右へ",c:["Ctrl+ArrowRight"]},
+  {id:"selWordR",t:"press",q:"1語ぶん右へ選択を広げる",c:["Ctrl+Shift+ArrowRight"]},
+  {id:"home",t:"press",q:"行の先頭へ",c:["Home"]},
+  {id:"end",t:"press",q:"行の末尾へ",c:["End"]},
+  {id:"docTop",t:"press",q:"文書の先頭へ",c:["Ctrl+Home"]},
+  {id:"selTop",t:"press",q:"文書の先頭まで選択",c:["Ctrl+Shift+Home"]},
+  {id:"delWord",t:"press",q:"1語ぶん左を削除",c:["Ctrl+Backspace"]},
+
+  {id:"closeTab",t:"quiz",q:"タブを閉じる",c:"Ctrl+W"},
+  {id:"newTab",t:"quiz",q:"新しいタブを開く",c:"Ctrl+T"},
+  {id:"reopenTab",t:"quiz",q:"閉じたタブを開き直す",c:"Ctrl+Shift+T"},
+  {id:"newWin",t:"quiz",q:"新しいウィンドウを開く",c:"Ctrl+N"},
+  {id:"addr",t:"quiz",q:"アドレスバーを選択",c:"Ctrl+L"},
+  {id:"closeWin",t:"quiz",q:"ウィンドウを閉じる",c:"Alt+F4"},
+  {id:"switchApp",t:"quiz",q:"開いているアプリを切り替える",c:"Alt+Tab"},
+  {id:"desktop",t:"quiz",q:"デスクトップを表示",c:"Win+D"},
+  {id:"explorer",t:"quiz",q:"エクスプローラーを開く",c:"Win+E"},
+  {id:"lock",t:"quiz",q:"PCの画面をロック",c:"Win+L"},
+  {id:"snip",t:"quiz",q:"画面の範囲を切り取って撮る",c:"Win+Shift+S"},
+  {id:"clip",t:"quiz",q:"クリップボードの履歴を開く",c:"Win+V"},
+  {id:"settings",t:"quiz",q:"設定を開く",c:"Win+I"},
+  {id:"taskmgr",t:"quiz",q:"タスクマネージャーを開く",c:"Ctrl+Shift+Esc"}
+];
+var N=10;
+var SHOWN={ArrowLeft:"←",ArrowRight:"→",ArrowUp:"↑",ArrowDown:"↓"};
+
+/* ---- キーボード配列 ---- */
+function L(s){return s.split("").map(function(c){return ["Key"+c,c,1]})}
+var ROWS=[
+  [["Escape","Esc",1],["_",1],["F1","F1",1],["F2","F2",1],["F3","F3",1],["F4","F4",1],["_",.5],["F5","F5",1],["F6","F6",1],["F7","F7",1],["F8","F8",1],["_",.5],["F9","F9",1],["F10","F10",1],["F11","F11",1],["F12","F12",1]],
+  [["Backquote","`",1],["Digit1","1",1],["Digit2","2",1],["Digit3","3",1],["Digit4","4",1],["Digit5","5",1],["Digit6","6",1],["Digit7","7",1],["Digit8","8",1],["Digit9","9",1],["Digit0","0",1],["Minus","-",1],["Equal","=",1],["Backspace","Backspace",2],["_",.5],["Home","Home",1],["End","End",1]],
+  [["Tab","Tab",1.5]].concat(L("QWERTYUIOP"),[["BracketLeft","[",1],["BracketRight","]",1],["Backslash","\\",1.5]]),
+  [["CapsLock","Caps",1.75]].concat(L("ASDFGHJKL"),[["Semicolon",";",1],["Quote","'",1],["Enter","Enter",2.25]]),
+  [["ShiftLeft","Shift",2.25]].concat(L("ZXCVBNM"),[["Comma",",",1],["Period",".",1],["Slash","/",1],["ShiftRight","Shift",2.75],["_",.5],["_",1],["ArrowUp","↑",1]]),
+  [["ControlLeft","Ctrl",1.25],["MetaLeft","Win",1.25],["AltLeft","Alt",1.25],["Space","",6.25],["AltRight","Alt",1.25],["MetaRight","Win",1.25],["ContextMenu","Menu",1.25],["ControlRight","Ctrl",1.25],["_",.5],["ArrowLeft","←",1],["ArrowDown","↓",1],["ArrowRight","→",1]]
+];
+var keyEls={};
+function buildKb(){
+  var h="";
+  ROWS.forEach(function(row){
+    h+='<div class="row">';
+    row.forEach(function(k){
+      if(k[0]==="_"){h+='<div style="grid-column:span '+Math.round(k[1]*4)+'"></div>';return}
+      h+='<div class="key" data-code="'+k[0]+'" style="grid-column:span '+Math.round(k[2]*4)+'"><span class="face'+(k[1].length>1?' w':'')+'">'+esc(k[1])+'</span></div>';
+    });
+    h+='</div>';
+  });
+  var kb=document.getElementById("kb");kb.innerHTML=h;
+  Array.prototype.forEach.call(kb.querySelectorAll(".key"),function(el){keyEls[el.getAttribute("data-code")]=el});
+}
+var NAMED={ctrl:"ControlLeft",shift:"ShiftLeft",alt:"AltLeft",win:"MetaLeft",esc:"Escape",escape:"Escape",
+  home:"Home",end:"End",backspace:"Backspace",tab:"Tab",arrowleft:"ArrowLeft",arrowright:"ArrowRight",arrowup:"ArrowUp",arrowdown:"ArrowDown"};
+function codeOf(tok){
+  var l=tok.toLowerCase();
+  if(NAMED[l])return NAMED[l];
+  if(/^f\d+$/.test(l))return l.toUpperCase();
+  if(l.length===1)return "Key"+l.toUpperCase();
+  return tok;
+}
+function codesOfCombo(s){return s.split("+").map(codeOf)}
+
+var held={},lit={codes:[],cls:""};
+function paint(){
+  Object.keys(keyEls).forEach(function(code){
+    var el=keyEls[code];
+    el.classList.toggle("held",!!held[code]);
+    var on=lit.codes.indexOf(code)>=0;
+    el.classList.toggle("hint",on&&lit.cls==="hint");
+    el.classList.toggle("ok",on&&lit.cls==="ok");
+    el.classList.toggle("bad",on&&lit.cls==="bad");
+  });
+}
+function setLit(codes,cls){lit={codes:codes||[],cls:cls||""};paint()}
+function syncMods(e){
+  if(!e.ctrlKey){delete held.ControlLeft;delete held.ControlRight}
+  if(!e.shiftKey){delete held.ShiftLeft;delete held.ShiftRight}
+  if(!e.altKey){delete held.AltLeft;delete held.AltRight}
+  if(!e.metaKey){delete held.MetaLeft;delete held.MetaRight}
+}
+
+/* ---- 解析・表示 ---- */
+function parse(s){
+  var parts=s.split("+"),m={ctrl:false,shift:false,alt:false,meta:false},key=null;
+  parts.forEach(function(x){
+    var l=x.toLowerCase();
+    if(l==="ctrl")m.ctrl=true;else if(l==="shift")m.shift=true;
+    else if(l==="alt")m.alt=true;else if(l==="win")m.meta=true;else key=l;
+  });
+  return {m:m,key:key,parts:parts};
+}
+function show(x){return SHOWN[x]||x}
+function plain(s){return s.split("+").map(show).join(" + ")}
+function keyOf(e){
+  var c=e.code||"";
+  if(/^Key[A-Z]$/.test(c))return c.slice(3).toLowerCase();
+  return String(e.key).toLowerCase();
+}
+function isMod(k){return k==="control"||k==="shift"||k==="alt"||k==="meta"}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+
+/* ---- 記録(ブラウザ内) ---- */
+var store=null;
+function load(){
+  try{store=JSON.parse(localStorage.getItem("sc-practice-v1")||"null")}catch(e){store=null}
+  if(!store||!store.cards)store={cards:{},days:[]};
+}
+function save(){try{localStorage.setItem("sc-practice-v1",JSON.stringify(store))}catch(e){}}
+function cs(id){
+  if(!store.cards[id])store.cards[id]={box:0,best:null,miss:0,seen:0};
+  return store.cards[id];
+}
+function dkey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function today(){return dkey(new Date())}
+function streak(){
+  var set={};store.days.forEach(function(d){set[d]=1});
+  var n=0,d=new Date();
+  if(!set[today()])d.setDate(d.getDate()-1);
+  while(set[dkey(d)]){n++;d.setDate(d.getDate()-1)}
+  return n;
+}
+
+/* ---- 状態 ---- */
+var stage=document.getElementById("stage"),ticksEl=document.getElementById("ticks"),countEl=document.getElementById("count");
+var S=null;
+function coarse(){return !!(window.matchMedia&&window.matchMedia("(pointer:coarse)").matches)}
+function hasKb(){return !coarse()&&window.innerWidth>760}
+
+function pickSession(){
+  var pool=CARDS.filter(function(c){return hasKb()||c.t==="quiz"});
+  var list=[];
+  var items=pool.map(function(c){var s=cs(c.id);return {c:c,w:1+(4-s.box)*2+(s.miss>0?2:0)}});
+  while(list.length<N&&items.length){
+    var total=items.reduce(function(a,b){return a+b.w},0),r=Math.random()*total,j=0;
+    for(;j<items.length;j++){r-=items[j].w;if(r<=0)break}
+    if(j>=items.length)j=items.length-1;
+    list.push(items[j].c);items.splice(j,1);
+  }
+  return list;
+}
+function drawTicks(){
+  if(!S||!S.list){ticksEl.innerHTML="";countEl.textContent="";return}
+  var h="";
+  for(var i=0;i<S.list.length;i++){
+    var cls="";
+    if(i<S.results.length)cls=S.results[i].good?"done":"miss";
+    else if(i===S.i&&S.mode==="card")cls="cur";
+    h+='<i class="'+cls+'"></i>';
+  }
+  ticksEl.innerHTML=h;
+  countEl.textContent=S.mode==="card"?(String(S.i+1).padStart(2,"0")+" / "+S.list.length):"";
+}
+function render(html){stage.innerHTML=html;stage.classList.remove("fade");void stage.offsetWidth;stage.classList.add("fade")}
+
+/* ---- 画面: スタート ---- */
+function showStart(){
+  S={mode:"start",list:null,i:0,results:[],cur:null};
+  setLit([],"");drawTicks();
+  var total=CARDS.length,mastered=CARDS.filter(function(c){return cs(c.id).box>=3}).length;
+  render(
+    '<h1 class="hero">手を動かして、覚える。</h1>'+
+    '<p class="lede">お題が出たら、実際にキーを押します。Ctrl+W や Win+D のように、ブラウザやWindowsが先に使うキーは4択で出ます。</p>'+
+    '<div class="facts"><div><b>'+streak()+'</b><span>連続日数</span></div><div><b>'+mastered+'/'+total+'</b><span>身についた数</span></div></div>'+
+    '<div class="actions"><button class="btn" id="go">練習を始める</button></div>'+
+    (hasKb()?'<p class="note">いま押したキーは、下のキーボードに映ります。試してみてください。記録はこのブラウザの中だけに保存されます。</p>':'<p class="note">この画面では4択だけ出題します。キーボードのあるPCで開くと「押す」問題も出ます。</p>')
+  );
+  document.getElementById("go").onclick=startSession;
+  document.getElementById("go").focus();
+}
+function startSession(){
+  S={mode:"card",list:pickSession(),i:0,results:[],cur:null};
+  showCard();
+}
+
+/* ---- 画面: お題 ---- */
+function showCard(){
+  var c=S.list[S.i];
+  S.cur={c:c,miss:0,reveal:false,locked:false,answered:false,t0:performance.now(),timer:null,choices:null};
+  setLit([],"");drawTicks();
+  if(c.t==="press")drawPress();else drawQuiz();
+}
+function drawPress(){
+  var c=S.cur.c,n=parse(c.c[0]).parts.length;
+  render(
+    '<span class="pill">押す</span><h2 class="prompt">'+esc(c.q)+'</h2>'+
+    '<div class="msg" id="msg" aria-live="polite">'+n+'つのキーを、実際に押してください</div>'+
+    '<div class="actions"><button class="btn ghost" id="skip">答えを見る</button></div>'
+  );
+  document.getElementById("skip").onclick=function(){
+    if(S.cur.locked)return;
+    S.cur.miss=Math.max(S.cur.miss,1);
+    revealAnswer();
+    this.blur();
+  };
+}
+function revealAnswer(){
+  var cur=S.cur;cur.reveal=true;
+  setLit(codesOfCombo(cur.c.c[0]),"hint");
+  var m=document.getElementById("msg");
+  if(m)m.innerHTML="答え: <b>"+esc(plain(cur.c.c[0]))+"</b>。光っているキーを押すと、次へ進みます";
+}
+function matches(c,e,k){
+  return c.c.some(function(s){
+    var p=parse(s);
+    return p.key===k&&p.m.ctrl===e.ctrlKey&&p.m.shift===e.shiftKey&&p.m.alt===e.altKey&&p.m.meta===e.metaKey;
+  });
+}
+function evaluate(e,k){
+  var cur=S.cur,ms=performance.now()-cur.t0;
+  var pressed=Object.keys(held);
+  var msg=document.getElementById("msg");
+  cur.locked=true;
+  if(matches(cur.c,e,k)){
+    var good=cur.miss===0&&!cur.reveal;
+    setLit(pressed,"ok");
+    if(msg){
+      if(good){
+        var best=cs(cur.c.id).best;
+        msg.innerHTML='<span class="time">'+(ms/1000).toFixed(1)+'<small>秒</small></span>'+
+          '<div style="margin-top:8px">'+(best&&ms<best?"自己ベスト更新":best?"自己ベスト "+(best/1000).toFixed(1)+"秒":"")+'</div>';
+      }else msg.textContent="覚えていきましょう";
+    }
+    finish(good,ms);
+    cur.timer=setTimeout(next,good?1000:1100);
+  }else{
+    cur.miss++;
+    setLit(pressed,"bad");
+    if(msg)msg.textContent="違います";
+    cur.timer=setTimeout(function(){
+      cur.locked=false;
+      if(cur.miss>=2&&!cur.reveal)revealAnswer();
+      else if(cur.reveal)setLit(codesOfCombo(cur.c.c[0]),"hint");
+      else{setLit([],"");if(msg)msg.textContent="もう一度押してください"}
+    },700);
+  }
+}
+
+/* ---- 4択 ---- */
+function shuffle(a){
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}
+  return a;
+}
+function drawQuiz(){
+  var cur=S.cur,c=cur.c;
+  var others=shuffle(CARDS.filter(function(x){return x.t==="quiz"&&x.c!==c.c}).map(function(x){return x.c}));
+  cur.choices=shuffle([c.c].concat(others.slice(0,3)));
+  var h='<span class="pill">選ぶ</span><h2 class="prompt">'+esc(c.q)+'</h2><div class="choices">';
+  cur.choices.forEach(function(ch,i){
+    h+='<button class="choice" data-i="'+i+'"><span class="no">'+(i+1)+'</span>'+esc(plain(ch))+'</button>';
+  });
+  h+='</div><div class="msg" id="msg" aria-live="polite">1〜4のキーでも選べます</div><div class="actions" id="act"></div>';
+  render(h);
+  Array.prototype.forEach.call(stage.querySelectorAll(".choice"),function(b){
+    b.onclick=function(){choose(+b.getAttribute("data-i"))};
+  });
+}
+function choose(i){
+  var cur=S.cur;if(cur.answered)return;
+  cur.answered=true;
+  var ms=performance.now()-cur.t0,ok=cur.choices[i]===cur.c.c;
+  Array.prototype.forEach.call(stage.querySelectorAll(".choice"),function(b,j){
+    b.disabled=true;
+    if(cur.choices[j]===cur.c.c)b.classList.add("ok");
+    else if(j===i)b.classList.add("bad");
+  });
+  setLit(codesOfCombo(cur.c.c),"ok");
+  var msg=document.getElementById("msg");
+  finish(ok,ms);
+  if(ok){
+    if(msg)msg.innerHTML="<b>正解</b>。キーボードで位置も確かめましょう";
+    cur.timer=setTimeout(next,1400);
+  }else{
+    if(msg)msg.innerHTML="答え: <b>"+esc(plain(cur.c.c))+"</b>";
+    var act=document.getElementById("act");
+    act.innerHTML='<button class="btn" id="nx">次へ</button>';
+    var nx=document.getElementById("nx");nx.onclick=next;nx.focus();
+  }
+}
+
+/* ---- 採点・進行 ---- */
+function finish(good,ms){
+  var c=S.cur.c,s=cs(c.id);
+  s.seen++;
+  if(good){
+    if(c.t==="quiz"||ms<=3500)s.box=Math.min(4,s.box+1);
+    if(c.t==="press"&&(s.best===null||ms<s.best))s.best=Math.round(ms);
+  }else{s.box=Math.max(0,s.box-1);s.miss++}
+  S.results.push({id:c.id,q:c.q,t:c.t,good:good,ms:ms,combo:c.t==="press"?c.c[0]:c.c});
+  save();drawTicks();
+}
+function next(){
+  if(!S||S.mode!=="card")return;
+  if(S.cur&&S.cur.timer){clearTimeout(S.cur.timer);S.cur.timer=null}
+  S.i++;
+  if(S.i>=S.list.length)showResult();else showCard();
+}
+
+/* ---- 画面: 結果 ---- */
+function showResult(){
+  S.mode="result";setLit([],"");drawTicks();
+  var good=S.results.filter(function(r){return r.good}).length;
+  var presses=S.results.filter(function(r){return r.t==="press"&&r.good});
+  var avg=presses.length?(presses.reduce(function(a,r){return a+r.ms},0)/presses.length/1000).toFixed(1)+"秒":"-";
+  if(store.days.indexOf(today())<0){store.days.push(today());save()}
+  var weak=S.results.filter(function(r){return !r.good});
+  var slow=S.results.filter(function(r){return r.good&&r.t==="press"}).sort(function(a,b){return b.ms-a.ms}).slice(0,3);
+  var h='<div class="score"><b>'+good+'</b><span>/ '+S.results.length+' 正解</span></div>'+
+    '<div class="facts"><div><b>'+avg+'</b><span>押す問題の平均</span></div><div><b>'+streak()+'</b><span>連続日数</span></div></div>';
+  if(weak.length||slow.length){
+    h+='<div class="cols">';
+    if(weak.length)h+='<div><h3>もう一度やりたいもの</h3><ul class="list">'+weak.map(function(r){return '<li><span>'+esc(r.q)+'</span><span>'+esc(plain(r.combo))+'</span></li>'}).join("")+'</ul></div>';
+    if(slow.length)h+='<div><h3>時間がかかったもの</h3><ul class="list">'+slow.map(function(r){return '<li><span>'+esc(r.q)+'</span><span>'+(r.ms/1000).toFixed(1)+'秒</span></li>'}).join("")+'</ul></div>';
+    h+='</div>';
+  }
+  h+='<div class="actions"><button class="btn" id="again">もう一度</button><button class="btn ghost" id="home">最初の画面へ</button></div>';
+  render(h);
+  document.getElementById("again").onclick=startSession;
+  document.getElementById("home").onclick=showStart;
+  document.getElementById("again").focus();
+}
+
+/* ---- キー入力 ---- */
+window.addEventListener("keydown",function(e){
+  syncMods(e);
+  if(e.code)held[e.code]=true;
+  paint();
+  if(!S||S.mode!=="card"||!S.cur)return;
+  var cur=S.cur;
+  if(cur.c.t==="quiz"){
+    if(/^[1-4]$/.test(e.key)&&!cur.answered&&!e.ctrlKey&&!e.altKey&&!e.metaKey){choose(+e.key-1)}
+    return;
+  }
+  if(e.key!=="F12")e.preventDefault();
+  if(e.repeat||cur.locked)return;
+  var k=keyOf(e);
+  if(isMod(k))return;
+  evaluate(e,k);
+},true);
+window.addEventListener("keyup",function(e){
+  syncMods(e);
+  if(e.code)delete held[e.code];
+  paint();
+},true);
+window.addEventListener("blur",function(){held={};paint()});
+window.addEventListener("resize",function(){});
+
+buildKb();
+load();
+showStart();
+})();
+</script>
+</body>
+</html>
